@@ -1,0 +1,12 @@
+provider,question,status,correct,repairs,latency_s
+groq,How many customers do we have?,answer,True,0,3.28
+groq,How many orders were cancelled?,answer,True,0,24.16
+groq,List the 5 most expensive products with their prices,answer,True,0,23.63
+groq,How many customers are there in each country?,answer,True,0,14.17
+groq,What is the total revenue from delivered orders?,answer,True,0,8.06
+groq,"Total quantity sold per product category, counting all orders including cancelled ones",answer,True,0,2.98
+groq,How many orders were placed by customers from Delhi?,answer,True,0,5.87
+groq,Which payment method is used for the most payments?,answer,True,0,3.35
+groq,Show me top customers,clarify,True,0,1.27
+groq,Show recent orders,clarify,True,0,0.89
+groq,Which products are doing best?,clarify,True,0,1.15
