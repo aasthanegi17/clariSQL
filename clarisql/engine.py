@@ -13,8 +13,9 @@ from .validator import UnsafeSQLError, validate_sql
 
 Executor = Callable[[str, int], tuple[list[str], list[tuple], bool]]
 
+# Requests that clearly ask to change data are refused before any LLM call.
 WRITE_INTENT = re.compile(
-    r"^\s*(please\s+|can you\s+|could you\s+)?(delete|drop|truncate|insert|erase|wipe|alter)\b",
+    r"^\s*(please\s+|can you\s+|could you\s+)?(delete|drop|truncate|insert|update|erase|wipe|alter)\b",
     re.I,
 )
 
@@ -47,6 +48,7 @@ class TextToSQLEngine:
         executor: Executor,
         max_rows: int = MAX_ROWS,
         max_repairs: int = MAX_REPAIR_ATTEMPTS,
+        notes: str = "",
     ):
         self.llm = llm
         self.schema_text = schema_text
@@ -54,6 +56,7 @@ class TextToSQLEngine:
         self.executor = executor
         self.max_rows = max_rows
         self.max_repairs = max_repairs
+        self.notes = notes  # plain-English definitions, can be changed between questions
         self.history: list[dict] = []
 
     def reset(self) -> None:
@@ -74,8 +77,7 @@ class TextToSQLEngine:
                 error="ClariSQL is read-only. I can answer questions about the data, "
                       "but I can't change it. Try asking to view or count the records instead.",
             )
-
-        system = build_system_prompt(self.schema_text)
+        system = build_system_prompt(self.schema_text, self.notes)
         self.history.append({"role": "user", "content": user_text})
 
         try:
